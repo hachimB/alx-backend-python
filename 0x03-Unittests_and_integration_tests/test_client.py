@@ -30,3 +30,13 @@ class TestGithubOrgClient(unittest.TestCase):
         test_client = GithubOrgClient(org_name)
         test_client.org()
         mock_org.assert_called_once()
+
+    def test_public_repos_url(self):
+        """test_public_repos_url"""
+        mock_playload = {"payload_key": "payload_value"}
+        with patch.object(GithubOrgClient, "org",
+                          return_value=mock_playload) as mock_org:
+            test_client = GithubOrgClient("mock_org")
+            response = test_client.org()
+            self.assertEqual(response, mock_playload)
+            mock_org.assert_called_once()
