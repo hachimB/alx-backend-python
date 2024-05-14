@@ -12,7 +12,7 @@ from utils import (
     memoize,
 )
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, PropertyMock
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -40,3 +40,19 @@ class TestGithubOrgClient(unittest.TestCase):
             response = test_client.org()
             self.assertEqual(response, mock_playload)
             mock_org.assert_called_once()
+
+    payload = [{"name": "repo1"}, {"name": "repo2"}]
+
+    @patch("client.get_json", return_value=payload)
+    def test_public_repos(self, mock_get_json):
+        """test_public_repos"""
+        with patch.object(GithubOrgClient,
+                          "_public_repos_url",
+                          new_callable=PropertyMock,
+                          return_value="http://example.com"
+                          ) as mock_property:
+            test_client = GithubOrgClient("mock_org")
+            response = test_client.public_repos()
+            self.assertEqual(response, ["repo1", "repo2"])
+            mock_property.assert_called_once()
+            mock_get_json.assert_called_once()
