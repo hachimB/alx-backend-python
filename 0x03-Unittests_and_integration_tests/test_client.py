@@ -56,3 +56,11 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(response, ["repo1", "repo2"])
             mock_property.assert_called_once()
             mock_get_json.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license"),
+        ({"license": {"key": "other_license"}}, "other_license"),
+    ])
+    def test_has_license(self, repo, license_key):
+        """test_has_licence"""
+        self.assertEqual(repo['license']['key'], license_key)
